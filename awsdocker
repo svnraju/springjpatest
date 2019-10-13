@@ -1,0 +1,11 @@
+FROM maven:3.6.0-jdk-11-slim as builder
+WORKDIR /app/springboot-jpa
+COPY ./pom.xml /app/pom.xml
+COPY ./ /app/springboot-jpa
+#RUN mvn test
+RUN mvn clean package
+FROM openjdk:11-jre-slim
+COPY --from=builder /app/springboot-jpa/target/springjpatest.jar springjpatest.jar
+RUN  apt-get update \
+  && apt-get install -y wget \
+  && rm -rf /var/lib/apt/lists/*
